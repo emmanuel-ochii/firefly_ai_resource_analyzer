@@ -133,6 +133,12 @@ The report is a JSON object:
 pytest
 ```
 
+Coverage report:
+
+```bash
+pytest --cov=src/resource_analyzer --cov-report=term-missing
+```
+
 Coverage includes:
 
 - Loader structure normalization and errors.

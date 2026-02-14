@@ -3,6 +3,9 @@ __pycache__/
 .pytest_cache/
 *.pyc
 *.egg-info/
+.coverage
+build/
+htmlcov/
 
 # Local test/demo inputs and generated reports
 cloud.json
