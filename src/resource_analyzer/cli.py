@@ -77,6 +77,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         report = ResourceReport(
             generatedAt=utc_now_iso8601(),
             matchKeyUsed=match_key,
+            totalResources=len(cloud_resources),
             items=analyze_resources(cloud_resources, iac_resources, match_key),
         )
 

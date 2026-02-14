@@ -109,7 +109,8 @@ The report is a JSON object:
 {
   "GeneratedAt": "2026-02-12T00:00:00Z",
   "MatchKeyUsed": "name",
-  "Items": [
+  "TotalResources": 1,
+  "Resources": [
     {
       "CloudResourceItem": {},
       "IacResourceItem": {},
@@ -120,6 +121,7 @@ The report is a JSON object:
 }
 ```
 
+- `TotalResources` is the number of cloud resources analyzed.
 - `State` is one of: `Missing`, `Match`, `Modified`.
 - `ChangeLog` is populated only for `Modified`.
 - `KeyName` paths use dotted keys and list indices (example: `spec.containers[0].image`).

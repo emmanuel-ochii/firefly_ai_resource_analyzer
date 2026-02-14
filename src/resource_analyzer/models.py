@@ -50,6 +50,7 @@ class ResourceReport:
 
     generatedAt: str
     matchKeyUsed: str
+    totalResources: int
     items: list[ReportItem]
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,5 +58,6 @@ class ResourceReport:
         return {
             "GeneratedAt": self.generatedAt,
             "MatchKeyUsed": self.matchKeyUsed,
-            "Items": [item.to_dict() for item in self.items],
+            "TotalResources": self.totalResources,
+            "Resources": [item.to_dict() for item in self.items],
         }

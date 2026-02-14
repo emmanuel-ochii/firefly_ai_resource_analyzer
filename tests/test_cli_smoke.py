@@ -48,8 +48,9 @@ def test_cli_smoke_generates_report_file(tmp_path: Path) -> None:
     assert report_path.exists()
 
     payload = json.loads(report_path.read_text(encoding="utf-8"))
-    assert set(payload.keys()) == {"GeneratedAt", "MatchKeyUsed", "Items"}
+    assert set(payload.keys()) == {"GeneratedAt", "MatchKeyUsed", "TotalResources", "Resources"}
     assert payload["MatchKeyUsed"] == "name"
-    assert isinstance(payload["Items"], list)
-    assert payload["Items"][0]["State"] == "Modified"
-    assert payload["Items"][0]["ChangeLog"][0]["KeyName"] == "spec.replicas"
+    assert payload["TotalResources"] == 1
+    assert isinstance(payload["Resources"], list)
+    assert payload["Resources"][0]["State"] == "Modified"
+    assert payload["Resources"][0]["ChangeLog"][0]["KeyName"] == "spec.replicas"
