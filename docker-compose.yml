@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  localstack:
+    build:
+      context: .
+      dockerfile: Dockerfile.localstack
+    image: resource-analyzer-localstack:latest
+    container_name: resource-analyzer-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=us-east-1
+      - REPORTS_BUCKET_NAME=resource-reports
+    volumes:
+      - localstack-data:/var/lib/localstack
+
+volumes:
+  localstack-data:

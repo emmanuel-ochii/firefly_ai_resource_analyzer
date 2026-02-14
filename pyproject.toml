@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resource-analyzer"
+version = "0.1.0"
+description = "Compare cloud resources with IaC resources and produce a resource report"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Codex" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+s3 = ["boto3>=1.34"]
+
+[project.scripts]
+resource-analyzer = "resource_analyzer.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

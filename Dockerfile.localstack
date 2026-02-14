@@ -1,0 +1,5 @@
+FROM localstack/localstack:3.8
+
+# Run initialization logic when LocalStack becomes ready.
+COPY docker/localstack/init/10-create-bucket.sh /etc/localstack/init/ready.d/10-create-bucket.sh
+RUN chmod +x /etc/localstack/init/ready.d/10-create-bucket.sh
