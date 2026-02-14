@@ -153,13 +153,13 @@ Coverage includes:
 Build and start LocalStack (uses `Dockerfile.localstack`):
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 The compose service sets `REPORTS_BUCKET_NAME=resource-reports`, and the init script at
 `docker/localstack/init/10-create-bucket.sh` creates it automatically when LocalStack is ready.
 
-If you want to create/verify a bucket manually:
+If you want to create/verify a bucket manually (requires AWS CLI):
 
 ```bash
 bash scripts/bootstrap_localstack.sh resource-reports
