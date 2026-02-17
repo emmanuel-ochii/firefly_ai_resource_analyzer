@@ -91,6 +91,18 @@ python -m resource_analyzer \
   --pretty
 ```
 
+Run with bare array output (`--format array`):
+
+```bash
+python -m resource_analyzer \
+  --cloud examples/cloud.json \
+  --iac examples/iac.json \
+  --match-key name \
+  --format array \
+  --out report-array.json \
+  --pretty
+```
+
 Arguments:
 
 - `--cloud PATH` (required)
