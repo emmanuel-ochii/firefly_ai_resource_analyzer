@@ -7,7 +7,7 @@ name = "resource-analyzer"
 version = "0.1.0"
 description = "Compare cloud resources with IaC resources and produce a resource report"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 authors = [{ name = "Codex" }]
 dependencies = []
 

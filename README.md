@@ -1,17 +1,29 @@
 # Resource Analyzer
 
-`resource_analyzer` compares cloud resources with IaC resources and emits a JSON resource report.
+`resource_analyzer` compares cloud resources with IaC resources and emits a JSON report.
+
+## Requirements (Read First)
+
+- **Python 3.9+ supported** (3.11 recommended)
+- Docker Desktop (optional, only for LocalStack/S3 bonus)
+- AWS CLI (optional, only for manual S3 verification)
+
+Quick check:
+
+```bash
+python3 --version
+```
 
 ## Runtime and packaging
 
-- Python: 3.11+
 - Packaging approach: plain `pip`/`setuptools` (no uv-specific project config)
 
 ## Project layout
 
 - `src/resource_analyzer/`: package source
 - `tests/`: pytest test suite
-- `Dockerfile.localstack`: LocalStack Dockerfile for the bonus requirement
+- `examples/`: sample cloud/iac input files
+- `Dockerfile.localstack`: LocalStack Dockerfile for bonus requirement
 - `docker/localstack/init/10-create-bucket.sh`: auto-creates S3 bucket on LocalStack readiness
 - `docker-compose.yml`: optional LocalStack S3 environment
 - `scripts/bootstrap_localstack.sh`: optional manual helper to create/ensure a bucket
@@ -21,6 +33,9 @@
 ├── Dockerfile.localstack
 ├── README.md
 ├── docker-compose.yml
+├── examples/
+│   ├── cloud.json
+│   └── iac.json
 ├── pyproject.toml
 ├── docker/
 │   └── localstack/
@@ -65,10 +80,15 @@ pip install -e '.[s3]'
 
 ## Usage
 
-Run as a module:
+Run with sample files:
 
 ```bash
-python -m resource_analyzer --cloud cloud.json --iac iac.json --match-key name --out report.json --pretty
+python -m resource_analyzer \
+  --cloud examples/cloud.json \
+  --iac examples/iac.json \
+  --match-key name \
+  --out report.json \
+  --pretty
 ```
 
 Arguments:
@@ -76,6 +96,7 @@ Arguments:
 - `--cloud PATH` (required)
 - `--iac PATH` (required)
 - `--match-key KEY` (optional if auto-detection succeeds)
+- `--format {wrapped,array}` (optional, default `wrapped`)
 - `--out PATH` (optional)
 - `--pretty` (optional)
 - `--upload-s3` (optional)
@@ -103,13 +124,13 @@ Anything else causes a clear loader error.
 
 ## Output format
 
-The report is a JSON object:
+### `--format wrapped` (default)
 
 ```json
 {
   "GeneratedAt": "2026-02-12T00:00:00Z",
   "MatchKeyUsed": "name",
-  "TotalResources": 1,
+  "TotalResources": 3,
   "Resources": [
     {
       "CloudResourceItem": {},
@@ -120,6 +141,21 @@ The report is a JSON object:
   ]
 }
 ```
+
+### `--format array`
+
+```json
+[
+  {
+    "CloudResourceItem": {},
+    "IacResourceItem": {},
+    "State": "Match",
+    "ChangeLog": []
+  }
+]
+```
+
+Notes:
 
 - `TotalResources` is the number of cloud resources analyzed.
 - `State` is one of: `Missing`, `Match`, `Modified`.
@@ -138,15 +174,6 @@ Coverage report:
 ```bash
 pytest --cov=src/resource_analyzer --cov-report=term-missing
 ```
-
-Coverage includes:
-
-- Loader structure normalization and errors.
-- Diff behavior for missing/match/modified resources.
-- Nested dictionary differences.
-- List index differences.
-- Missing key differences (`null` vs value).
-- CLI smoke execution with temporary files.
 
 ## Optional: LocalStack S3 upload
 
@@ -169,13 +196,19 @@ Run analyzer with upload:
 
 ```bash
 python -m resource_analyzer \
-  --cloud cloud.json \
-  --iac iac.json \
+  --cloud examples/cloud.json \
+  --iac examples/iac.json \
   --match-key name \
   --upload-s3 \
   --bucket resource-reports \
   --key reports/latest.json \
-  --endpoint-url http://localhost:4566
+  --endpoint-url http://localhost:4566 \
+  --out report.json \
+  --pretty
 ```
 
 The program ensures the bucket exists before uploading.
+
+## Compatibility note (`slots=True` fallback)
+
+This project supports Python 3.9+. In `models.py`, dataclass creation uses a version-aware helper that applies `slots=True` on Python 3.10+ and falls back to plain dataclasses on Python 3.9.

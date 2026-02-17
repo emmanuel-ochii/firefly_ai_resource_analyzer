@@ -1,4 +1,5 @@
 .venv/
+.venv*/
 __pycache__/
 .pytest_cache/
 *.pyc
@@ -8,6 +9,6 @@ build/
 htmlcov/
 
 # Local test/demo inputs and generated reports
-cloud.json
-iac.json
-report.json
+/cloud.json
+/iac.json
+/report.json

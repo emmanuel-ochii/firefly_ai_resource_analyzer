@@ -1,0 +1,30 @@
+[
+  {
+    "name": "service-api",
+    "spec": {
+      "replicas": 3,
+      "containers": [
+        {
+          "name": "api",
+          "image": "api:2.0"
+        }
+      ]
+    },
+    "tags": {
+      "env": "prod"
+    }
+  },
+  {
+    "name": "service-worker",
+    "spec": {
+      "replicas": 2,
+      "queue": "jobs"
+    }
+  },
+  {
+    "name": "service-missing",
+    "spec": {
+      "replicas": 1
+    }
+  }
+]

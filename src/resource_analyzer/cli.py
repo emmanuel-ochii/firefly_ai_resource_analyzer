@@ -35,6 +35,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--pretty", action="store_true", help="Pretty-print JSON output"
     )
+    parser.add_argument(
+        "--format",
+        choices=("wrapped", "array"),
+        default="wrapped",
+        help=(
+            "Output format: 'wrapped' includes top-level metadata, "
+            "'array' prints only resource comparison entries."
+        ),
+    )
 
     parser.add_argument(
         "--upload-s3",
@@ -74,15 +83,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             requested_key=args.match_key,
         )
 
-        report = ResourceReport(
-            generatedAt=utc_now_iso8601(),
-            matchKeyUsed=match_key,
-            totalResources=len(cloud_resources),
-            items=analyze_resources(cloud_resources, iac_resources, match_key),
-        )
+        report_items = analyze_resources(cloud_resources, iac_resources, match_key)
+        if args.format == "array":
+            report_payload = [item.to_dict() for item in report_items]
+        else:
+            report_payload = ResourceReport(
+                generatedAt=utc_now_iso8601(),
+                matchKeyUsed=match_key,
+                totalResources=len(cloud_resources),
+                items=report_items,
+            ).to_dict()
 
-        report_dict = report.to_dict()
-        report_json = to_json_text(report_dict, pretty=args.pretty)
+        report_json = to_json_text(report_payload, pretty=args.pretty)
 
         if args.out:
             out_path = Path(args.out)

@@ -2,13 +2,26 @@
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
 from typing import Any, Literal
 
 State = Literal["Missing", "Match", "Modified"]
 
+def model_dataclass() -> Any:
+    """Return a dataclass decorator with safe slots handling.
 
-@dataclass(slots=True)
+    Python 3.10+ supports ``slots=True`` in ``dataclass``.
+    For older runtimes (e.g. 3.9), fallback to a regular dataclass so
+    class creation does not fail if compatibility is required later.
+    """
+
+    if sys.version_info >= (3, 10):
+        return dataclass(slots=True)
+    return dataclass()
+
+
+@model_dataclass()
 class ChangeLogEntry:
     """Represents one field-level difference between cloud and IaC resources."""
 
@@ -25,7 +38,7 @@ class ChangeLogEntry:
         }
 
 
-@dataclass(slots=True)
+@model_dataclass()
 class ReportItem:
     """Comparison result for one cloud resource."""
 
@@ -44,7 +57,7 @@ class ReportItem:
         }
 
 
-@dataclass(slots=True)
+@model_dataclass()
 class ResourceReport:
     """Top-level report output."""
 
